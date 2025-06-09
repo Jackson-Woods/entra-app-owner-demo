@@ -2,6 +2,17 @@
 
 A functional prototype demonstrating enhanced app owner management capabilities for Microsoft Entra admin center, focusing on Enterprise applications and App registrations.
 
+## 🌐 **Live Demo & Sharing**
+
+### 📍 **Quick Access Options:**
+- **ZIP Package**: Download and open `index.html` in any browser
+- **Local Server**: Run `python -m http.server 8080` for full functionality
+- **GitHub Pages**: Host for free at `https://yourusername.github.io/repository-name`
+- **Netlify/Vercel**: Professional hosting with custom domains
+
+### 📋 **For Reviewers:**
+See `REVIEWER_GUIDE.md` for testing instructions and `DEPLOYMENT_GUIDE.md` for hosting options
+
 ## ✨ Features
 
 ### Core Functionality
