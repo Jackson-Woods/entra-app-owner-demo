@@ -554,9 +554,10 @@ function updateNavigation(activeSection) {
     // Add active class to current section
     const sections = {
         'tenant-overview': 0,
-        'groups': 2,
-        'enterprise-apps': 4,
-        'app-registrations': 5
+        'tenant-configuration': 1,
+        'groups': 3,
+        'enterprise-apps': 5,
+        'app-registrations': 6
     };
     
     if (sections[activeSection] !== undefined) {
@@ -663,6 +664,35 @@ function showTenantOverview() {
                 <h1 class="page-title">${tenantData.name}</h1>
                 <p class="page-subtitle">Tenant ID: ${tenantData.domain}</p>            </div>
             
+            <div class="config-sections">
+                <div class="config-section">
+                    <div class="config-section-header">
+                        <h2 class="section-title">General</h2>
+                        <p class="section-description">Basic tenant configuration</p>
+                    </div>
+                    <div class="config-grid">
+                        <div class="config-item">
+                            <div class="config-label">Tenant name</div>
+                            <div class="config-value">${tenantData.name}</div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Primary domain</div>
+                            <div class="config-value">${tenantData.domain}</div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Tenant type</div>
+                            <div class="config-value">Azure AD</div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Country/Region</div>
+                            <div class="config-value">United States</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
             <div class="overview-grid">
                 <div class="overview-card" onclick="showEnterpriseApps()">
                     <div class="card-header">
@@ -748,9 +778,9 @@ function showTenantOverview() {
                         <div class="stat-item">
                             <div class="stat-number">12</div>
                             <div class="stat-label">Policies</div>
-                        </div>
-                    </div>
+                        </div>                    </div>
                 </div>            </div>
+            
         </div>
     `;
     
@@ -763,9 +793,84 @@ function showTenantOverview() {
     window.removeSelectedOwner = removeSelectedOwner;
     window.searchPotentialOwners = searchPotentialOwners;
     window.updateSearchResults = updateSearchResults;
-    window.updateSelectedOwners = updateSelectedOwners;
-    window.removeOwner = removeOwner;
+    window.updateSelectedOwners = updateSelectedOwners;    window.removeOwner = removeOwner;
 }
+
+function showTenantConfiguration() {
+    currentPage = 'tenant-configuration';
+    updateBreadcrumb([
+        { text: 'Overview', onClick: 'showTenantOverview()' },
+        { text: 'Tenant configuration' }
+    ]);
+    updateNavigation('tenant-configuration');
+    clearSubNavigation(); // Clear any app/group sub-navigation
+    
+    const content = `
+        <div class="page-container">
+            <div class="page-header">
+                <h1 class="page-title">Tenant configuration</h1>
+                <p class="page-subtitle">Configure tenant-wide settings and policies</p>
+            </div>
+              <div class="config-sections">
+                <div class="config-section">
+                    <div class="config-section-header">
+                        <h2 class="section-title">Owner Management Policies</h2>
+                        <p class="section-description">Configure how application and group ownership is managed</p>
+                    </div>                    <div class="config-policies">
+                        <div class="policy-item">
+                            <div class="policy-header">
+                                <div class="policy-title">Orphaned resource alerts</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="policy-description">Send notifications when applications or groups have no owners assigned</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-section">
+                    <div class="config-section-header">
+                        <h2 class="section-title">Security Settings</h2>
+                        <p class="section-description">Configure security and compliance options</p>
+                    </div>
+                    <div class="config-grid">
+                        <div class="config-item">
+                            <div class="config-label">Multi-factor authentication</div>
+                            <div class="config-value">
+                                <span class="status-badge enabled">Enabled</span>
+                            </div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Conditional access</div>
+                            <div class="config-value">
+                                <span class="status-badge enabled">12 policies</span>
+                            </div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Identity protection</div>
+                            <div class="config-value">
+                                <span class="status-badge enabled">Enabled</span>
+                            </div>
+                        </div>
+                        <div class="config-item">
+                            <div class="config-label">Security defaults</div>
+                            <div class="config-value">
+                                <span class="status-badge disabled">Disabled</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('main-content').innerHTML = content;
+}
+
+// Make the function globally accessible
+window.showTenantConfiguration = showTenantConfiguration;
 
 function showGroups() {
     currentPage = 'groups';
@@ -1639,7 +1744,8 @@ function showGroupOwnersPage(groupId) {
                             </td>
                             <td>
                                 <span class="owner-type">${owner.type || 'Owner'}</span>
-                            </td>                            <td>
+                            </td>
+                            <td>
                                 <div class="owner-actions">
                                     <button class="action-btn" onclick="console.log('🔧 Group Edit button clicked for owner:', '${owner.id}'); editOwnerType('${owner.id}')" title="Edit owner type">
                                         <i class="fas fa-pencil-alt"></i>
@@ -2203,8 +2309,7 @@ function removeOwner(ownerId) {
         console.error('Cannot determine context for owner removal');
         return;
     }
-    
-    // Find the owner to remove
+      // Find the owner to remove
     const ownerIndex = targetObject.owners.findIndex(owner => owner.id === ownerId);
     if (ownerIndex === -1) {
         console.error('Owner not found for removal');

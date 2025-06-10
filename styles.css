@@ -1069,3 +1069,149 @@ body {
 .btn:disabled:hover {
     background-color: inherit;
 }
+
+/* Tenant Configuration Styles */
+.config-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.config-section {
+    background: white;
+    border: 1px solid #e1dfdd;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.config-section-header {
+    margin-bottom: 20px;
+}
+
+.section-description {
+    color: #605e5c;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.config-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.config-label {
+    font-size: 12px;
+    color: #605e5c;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.config-value {
+    color: #323130;
+    font-size: 14px;
+}
+
+.config-policies {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.policy-item {
+    padding: 16px;
+    border: 1px solid #e1dfdd;
+    border-radius: 8px;
+    background-color: #faf9f8;
+}
+
+.policy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.policy-title {
+    font-weight: 600;
+    color: #323130;
+    font-size: 14px;
+}
+
+.policy-description {
+    color: #605e5c;
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Toggle Switch Styles */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #d2d0ce;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+    background-color: #0078d4;
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* Status Badge Styles */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.enabled {
+    background-color: #dff6dd;
+    color: #107c10;
+}
+
+.status-badge.disabled {
+    background-color: #fde7e9;
+    color: #a4262c;
+}
