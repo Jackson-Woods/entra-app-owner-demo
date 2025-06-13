@@ -1291,10 +1291,9 @@ function showAppOwnersPage(appType, appId) {
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="owner-email">${owner.email}</span>
-                                </td>
+                                    <span class="owner-email">${owner.email}</span>                                </td>
                                 <td>
-                                    <span class="owner-type">${owner.type || 'Owner'}</span>
+                                    <span class="owner-type ${(owner.type || 'Owner').toLowerCase().replace(/ /g, '-')}">${owner.type || 'Owner'}</span>
                                 </td>                                <td>
                                     <div class="owner-actions">
                                         <button class="action-btn" onclick="console.log('🔧 App Edit button clicked for owner:', '${owner.id}'); editOwnerType('${owner.id}')" title="Edit owner type">
@@ -2381,3 +2380,22 @@ if (typeof window.editOwnerType === 'function') {
 } else {
     console.error('❌ editOwnerType is NOT available globally');
 }
+
+// Settings Dropdown Functions
+function toggleSettingsDropdown() {
+    const dropdown = document.getElementById('settings-dropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close settings dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('settings-dropdown');
+    const settingsButton = event.target.closest('.settings-dropdown');
+    
+    if (!settingsButton && dropdown) {
+        dropdown.classList.remove('show');
+    }
+});
+
+// Make settings functions globally available
+window.toggleSettingsDropdown = toggleSettingsDropdown;

@@ -125,6 +125,49 @@ body {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
+/* Settings Dropdown */
+.settings-dropdown {
+    position: relative;
+}
+
+.settings-dropdown-content {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #e1dfdd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 8px;
+    min-width: 200px;
+    z-index: 1001;
+    display: none;
+    margin-top: 8px;
+}
+
+.settings-dropdown-content.show {
+    display: block;
+}
+
+.settings-item {
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+.settings-item:hover {
+    background-color: #f3f2f1;
+}
+
+.settings-toggle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #323130;
+    user-select: none;
+}
+
 /* Sidebar */
 .sidebar {
     position: fixed;
@@ -680,9 +723,29 @@ body {
 }
 
 .owner-type {
-    color: #605e5c;
-    font-size: 14px;
+    display: inline-block;
+    padding: 4px 8px;
+    font-size: 12px;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+    border-radius: 12px;
+    background-color: #605e5c; /* default badge color */
+}
+
+/* Badge colors by owner type */
+.owner-type.full-owner { 
+    background-color: #006dc0; /* Dark blue */
+}
+.owner-type.technical-owner { 
+    background-color: #4d1ea5; /* Medium blue */
+}
+.owner-type.sponsor { 
+    background-color: #b19600; /* Purple */
+}
+.owner-type.contact { 
+    background-color: #107c10; /* Green */
 }
 
 .owner-actions {

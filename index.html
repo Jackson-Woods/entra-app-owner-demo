@@ -18,11 +18,23 @@
                 <span class="service-name">Microsoft Entra admin center</span>
                 <span id="breadcrumb-content"></span>
             </div>
-        </div>
-        <div class="nav-right">
+        </div>        <div class="nav-right">
             <button class="nav-icon-btn"><i class="fas fa-bell"></i></button>
             <button class="nav-icon-btn"><i class="fas fa-question-circle"></i></button>
-            <button class="nav-icon-btn"><i class="fas fa-cog"></i></button>
+            <div class="settings-dropdown">
+                <button class="nav-icon-btn" onclick="toggleSettingsDropdown()"><i class="fas fa-cog"></i></button>
+                <div class="settings-dropdown-content" id="settings-dropdown">
+                    <div class="settings-item">
+                        <label class="settings-toggle">
+                            <span>Dark mode</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="dark-mode-toggle">
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div class="user-menu">
                 <span>JA</span>
                 <i class="fas fa-chevron-down"></i>
@@ -48,11 +60,10 @@
                     <span>Tenant configuration</span>
                 </div>
             </div>
-            
-            <div class="nav-section">
+              <div class="nav-section">
                 <div class="nav-section-header">Identity</div>
                 <div class="nav-item">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-user"></i>
                     <span>Users</span>
                 </div>                <div class="nav-item" onclick="showGroups()">
                     <i class="fas fa-users-cog"></i>
