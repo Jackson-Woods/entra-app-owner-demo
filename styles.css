@@ -1676,12 +1676,8 @@ body.dark-mode {
     color: #cccccc;
 }
 
-.dark-mode .selected-avatar {
-    background-color: #007acc;
-}
-
 .dark-mode .remove-selected-btn {
-    color: #cccccc;
+    color: #f2b2b5;
 }
 
 .dark-mode .remove-selected-btn:hover {
@@ -1745,6 +1741,10 @@ body.dark-mode {
 
 .dark-mode .section-title {
     color: #ffffff;
+}
+
+.dark-mode .section-description {
+    color: #cccccc;
 }
 
 .dark-mode .info-grid {

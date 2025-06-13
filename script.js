@@ -2150,8 +2150,7 @@ function updateSelectedOwners() {
                 <div class="selected-name">${owner.name}</div>
                 <div class="selected-email">${owner.email}</div>
                 <div class="selected-type">${owner.type === 'group' ? 'Group' : 'User'}</div>
-            </div>
-            <button class="remove-selected-btn" onclick="removeSelectedOwner('${owner.id}')" title="Remove">
+            </div>            <button class="remove-selected-btn" onclick="removeSelectedOwner('${owner.id}', event)" title="Remove">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -2167,8 +2166,15 @@ function updateSelectedOwners() {
     validateOwnerSelection();
 }
 
-function removeSelectedOwner(id) {
+function removeSelectedOwner(id, event) {
     console.log('🔧 removeSelectedOwner called for id:', id);
+    
+    // Prevent event propagation to avoid closing the modal
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    
     selectedOwnersForModal = selectedOwnersForModal.filter(owner => owner.id !== id);
     updateSelectedOwners();
 }
