@@ -782,9 +782,7 @@ function showTenantOverview() {
                 </div>            </div>
             
         </div>
-    `;
-    
-    document.getElementById('main-content').innerHTML = content;
+    `;    document.getElementById('main-content').innerHTML = content;
     
     // Ensure modal functions are globally accessible after dynamic content update
     window.addOwner = addOwner;
@@ -2399,3 +2397,41 @@ document.addEventListener('click', function(event) {
 
 // Make settings functions globally available
 window.toggleSettingsDropdown = toggleSettingsDropdown;
+
+// Dark Mode Functions
+function initializeDarkMode() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const savedDarkMode = localStorage.getItem('darkMode') === 'true';    if (darkModeToggle) {
+        darkModeToggle.checked = savedDarkMode;
+        darkModeToggle.addEventListener('change', function() {
+            const isDarkMode = this.checked;
+            localStorage.setItem('darkMode', isDarkMode);
+            applyDarkModeGlobally(isDarkMode);
+        });
+    }
+    
+    // Apply dark mode on page load
+    applyDarkModeGlobally(savedDarkMode);
+}
+
+function applyDarkModeGlobally(isDarkMode) {
+    const body = document.body;
+    const mainContent = document.getElementById('main-content');
+    const sidebar = document.getElementById('sidebar');
+    const modal = document.getElementById('add-owner-modal');
+    
+    if (isDarkMode) {
+        body.classList.add('dark-mode');
+        if (mainContent) mainContent.classList.add('dark-mode');
+        if (sidebar) sidebar.classList.add('dark-mode-sidebar');
+        if (modal) modal.classList.add('dark-mode');
+    } else {
+        body.classList.remove('dark-mode');
+        if (mainContent) mainContent.classList.remove('dark-mode');
+        if (sidebar) sidebar.classList.remove('dark-mode-sidebar');
+        if (modal) modal.classList.remove('dark-mode');
+    }
+}
+
+// Initialize dark mode when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeDarkMode);
