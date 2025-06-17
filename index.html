@@ -6,6 +6,14 @@
     <title>Microsoft Entra admin center</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+    ul {
+      padding-left: 40px; 
+    }
+    a {
+        color: #1fa4f1;
+    }
+    </style>
 </head>
 <body>
     <!-- Top Navigation Bar -->
@@ -20,7 +28,7 @@
             </div>
         </div>        <div class="nav-right">
             <button class="nav-icon-btn"><i class="fas fa-bell"></i></button>
-            <button class="nav-icon-btn"><i class="fas fa-question-circle"></i></button>
+            <button class="nav-icon-btn" onclick="openHelpOverlay()"><i class="fas fa-question-circle"></i></button>
             <div class="settings-dropdown">
                 <button class="nav-icon-btn" onclick="toggleSettingsDropdown()"><i class="fas fa-cog"></i></button>
                 <div class="settings-dropdown-content" id="settings-dropdown">
@@ -156,6 +164,33 @@
                 <button class="btn btn-primary" onclick="addSelectedOwners()" id="add-owners-btn" disabled>Add owners</button>
             </div>
         </div>
-    </div>    <script src="script.js?v=20250609"></script>
+    </div>    
+    
+    <!-- Help Overlay -->
+    <div id="help-overlay" class="help-overlay" style="display: none;">
+        <div class="help-overlay-content">
+            <div class="help-overlay-header">
+                <h2 class="help-overlay-title">Help - App Owner Improvements Demo</h2>
+                <button class="help-overlay-close" onclick="closeHelpOverlay()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="help-overlay-body">
+                This demo focuses on app owner improvements. Don't worry about missing or broken features in other areas.<br><br>
+                Please navigate to an enterprise app or app registration and try the following actions:
+                <ul>
+                    <li>Observe the owner type details on the owner page</li>
+                    <li>Add a new individual owner</li>
+                    <li>Add a group as an ower</li>
+                    <li>Remove an owner</li>
+                    <li>Change an owner's type</li>
+                </ul>
+                <br>
+                <p>When you're done, please share your feedback at <a href="https://aka.ms/entra-app-owner-improvements" target="_blank">https://aka.ms/entra-app-owner-improvements</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=20250609"></script>
 </body>
 </html>

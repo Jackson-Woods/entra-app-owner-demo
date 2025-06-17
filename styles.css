@@ -487,6 +487,11 @@ body {
     background-color: #f3f2f1;
 }
 
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
 /* Search and Filter Bar */
 .filter-bar {
     background: white;
@@ -788,6 +793,85 @@ body {
 .btn-sm {
     padding: 6px 12px;
     font-size: 12px;
+}
+
+/* Owner Types Information Box */
+.owner-types-info {
+    margin-top: 32px;
+    padding: 24px;
+    background-color: #f8f9fa;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+}
+
+.info-title {
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #323130;
+}
+
+.owner-type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.owner-type-card {
+    background: white;
+    border: 1px solid #e1e5e9;
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.owner-type-header {
+    margin-bottom: 12px;
+}
+
+.owner-type-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.owner-type-badge.contact {
+    background-color: #107c10;
+    color: white;
+}
+
+.owner-type-badge.sponsor {
+    background-color: #b19600;
+    color: white;
+}
+
+.owner-type-badge.technical-owner {
+    background-color: #4d1ea5;
+    color: white;
+}
+
+.owner-type-badge.full-owner {
+    background-color: #006dc0;
+    color: white;
+}
+
+.owner-type-description p {
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #323130;
+}
+
+.owner-type-description p:last-child {
+    margin-bottom: 0;
+}
+
+.owner-type-description strong {
+    color: #323130;
+    font-weight: 600;
 }
 
 /* Add Owner Modal */
@@ -1260,6 +1344,84 @@ input:checked + .toggle-slider:before {
     transform: translateX(20px);
 }
 
+    /* Help Overlay Styles */
+.help-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+
+.help-overlay-content {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 640px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: fadeInScale 0.3s ease-out;
+}
+
+.help-overlay-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #e1e5e9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.help-overlay-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #323130;
+}
+
+.help-overlay-close {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #605e5c;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.help-overlay-close:hover {
+    background-color: #f3f2f1;
+    color: #323130;
+}
+
+.help-overlay-body {
+    padding: 20px 24px 24px;
+    color: #323130;
+    line-height: 1.5;
+}
+
+@keyframes fadeInScale {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
 /* Status Badge Styles */
 .status-badge {
     padding: 4px 8px;
@@ -1529,12 +1691,35 @@ body.dark-mode {
     color: #cccccc;
 }
 
+/* Dark Mode Owner Types Information */
+.dark-mode .owner-types-info {
+    background-color: #2d2d30;
+    border-color: #3e3e42;
+}
+
+.dark-mode .info-title {
+    color: #ffffff;
+}
+
+.dark-mode .owner-type-card {
+    background-color: #252526;
+    border-color: #3e3e42;
+}
+
+.dark-mode .owner-type-description p {
+    color: #cccccc;
+}
+
+.dark-mode .owner-type-description strong {
+    color: #ffffff;
+}
+
 .dark-mode .action-btn {
     color: #4fc3f7;
 }
 
 .dark-mode .action-btn:hover {
-    background-color: #2d2d30;
+    background-color: #3d3d40;
 }
 
 /* Dark Mode Modal Styles */
@@ -1790,6 +1975,33 @@ body.dark-mode {
 
 .dark-mode .no-owners {
     color: #cccccc;
+}
+
+/* Dark Mode help overlay styles */
+.dark-mode .help-overlay-content {
+    background: #252526;
+    border: 1px solid #3e3e42;
+}
+
+.dark-mode .help-overlay-header {
+    border-bottom-color: #3e3e42;
+}
+
+.dark-mode .help-overlay-title {
+    color: #ffffff;
+}
+
+.dark-mode .help-overlay-close {
+    color: #cccccc;
+}
+
+.dark-mode .help-overlay-close:hover {
+    background-color: #3e3e42;
+    color: #ffffff;
+}
+
+.dark-mode .help-overlay-body {
+    color: #ffffff;
 }
 
 /* Dark Mode Badge Styles */

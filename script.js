@@ -26,6 +26,7 @@ const enterpriseApps = [
         owners: [
             { name: 'Alice Johnson', email: 'alice.johnson@contoso.com', id: 'user1', type: 'Full Owner' },
             { name: 'Bob Smith', email: 'bob.smith@contoso.com', id: 'user2', type: 'Technical Owner' },
+            { name: 'Sales Team', email: 'sales.team@contoso.com', id: 'g1', type: 'Sponsor' },
             { name: 'Sarah Davis', email: 'sarah.davis@contoso.com', id: 'user7', type: 'Sponsor' },
             { name: 'David Lee', email: 'david.lee@contoso.com', id: 'user4', type: 'Contact' },
             { name: 'Emma Brown', email: 'emma.brown@contoso.com', id: 'user5', type: 'Full Owner' }
@@ -165,6 +166,7 @@ const groups = [
     {
         id: 'g1',
         name: 'Sales Team',
+        email: 'sales.team@contoso.com',
         description: 'Sales department members',
         type: 'Security',
         membershipType: 'Assigned',
@@ -177,6 +179,7 @@ const groups = [
     {
         id: 'g2',
         name: 'Marketing Department',
+        email: 'marketing.department@contoso.com',
         description: 'Marketing team and contractors',
         type: 'Microsoft 365',
         membershipType: 'Assigned',
@@ -187,6 +190,7 @@ const groups = [
     },    {
         id: 'g3',
         name: 'Entra Administrators',
+        email: 'entra.administrators@contoso.com',
         description: 'IT department with administrative privileges',
         type: 'Security',
         membershipType: 'Assigned',
@@ -198,6 +202,7 @@ const groups = [
     {
         id: 'g4',
         name: 'Finance Team',
+        email: 'finance.team@contoso.com',
         description: 'Finance and accounting personnel',
         type: 'Security',
         membershipType: 'Assigned',
@@ -208,6 +213,7 @@ const groups = [
     {
         id: 'g5',
         name: 'All Company',
+        email: 'all.company@contoso.com',
         description: 'All employees and contractors',
         type: 'Microsoft 365',
         membershipType: 'Dynamic',
@@ -218,6 +224,7 @@ const groups = [
     },    {
         id: 'g6',
         name: 'Remote Workers',
+        email: 'remote.workers@contoso.com',
         description: 'Employees working remotely',
         type: 'Security',
         membershipType: 'Dynamic',
@@ -228,6 +235,7 @@ const groups = [
     {
         id: 'g7',
         name: 'Global Administrators',
+        email: 'global.administrators@contoso.com',
         description: 'Users with global administrator privileges',
         type: 'Role-assignable security',
         membershipType: 'Assigned',
@@ -241,6 +249,7 @@ const groups = [
     {
         id: 'g8',
         name: 'Exchange Administrators',
+        email: 'exchange.administrators@contoso.com',
         description: 'Users with Exchange Online administrator role',
         type: 'Role-assignable security',
         membershipType: 'Assigned',
@@ -253,6 +262,7 @@ const groups = [
     {
         id: 'g9',
         name: 'Security Readers',
+        email: 'security.readers@contoso.com',
         description: 'Users with read-only access to security reports and settings',
         type: 'Role-assignable security',
         membershipType: 'Assigned',
@@ -264,6 +274,7 @@ const groups = [
     },    {
         id: 'g10',
         name: 'Helpdesk Administrators',
+        email: 'helpdesk.administrators@contoso.com',
         description: 'First-line support staff with limited administrative privileges',
         type: 'Role-assignable security',
         membershipType: 'Assigned',
@@ -274,6 +285,7 @@ const groups = [
     {
         id: 'g11',
         name: 'EMEA IT Support',
+        email: 'emea.it.support@contoso.com',
         description: 'IT support team for Europe, Middle East, and Africa region',
         type: 'Security',
         membershipType: 'Assigned',
@@ -287,6 +299,7 @@ const groups = [
     {
         id: 'g12',
         name: 'West Coast IT Admins',
+        email: 'west.coast.it.admins@contoso.com',
         description: 'IT administrators for West Coast offices (Seattle, San Francisco, Los Angeles)',
         type: 'Security',
         membershipType: 'Assigned',
@@ -299,6 +312,7 @@ const groups = [
     {
         id: 'g13',
         name: 'East Coast IT Support',
+        email: 'east.coast.it.support@contoso.com',
         description: 'IT support team covering New York, Boston, and Atlanta offices',
         type: 'Security',
         membershipType: 'Assigned',
@@ -312,6 +326,7 @@ const groups = [
     {
         id: 'g14',
         name: 'APAC Regional IT',
+        email: 'apac.regional.it@contoso.com',
         description: 'Asia-Pacific regional IT team for Singapore, Tokyo, and Sydney offices',
         type: 'Security',
         membershipType: 'Assigned',
@@ -324,6 +339,7 @@ const groups = [
     {
         id: 'g15',
         name: 'Central IT Operations',
+        email: 'central.it.operations@contoso.com',
         description: 'Central IT operations team for Chicago and Dallas offices',
         type: 'Security',
         membershipType: 'Assigned',
@@ -337,6 +353,7 @@ const groups = [
     {
         id: 'g16',
         name: 'Canada IT Support',
+        email: 'canada.it.support@contoso.com',
         description: 'IT support team for Toronto and Vancouver offices',
         type: 'Security',
         membershipType: 'Assigned',
@@ -1315,8 +1332,7 @@ function showAppOwnersPage(appType, appId) {
                 <p>This application doesn't have any owners. Add an owner to manage this application.</p>
             </div>
         `;
-    
-    const content = `
+      const content = `
         <div class="page-container">
             <div class="owners-header">
                 <h1 class="page-title">Owners</h1>
@@ -1329,6 +1345,51 @@ function showAppOwnersPage(appType, appId) {
             </div>
             
             ${ownersContent}
+            
+            <div class="owner-types-info">
+                <h3 class="info-title">Owner Types & Permissions</h3>
+                <div class="owner-type-grid">
+                    <div class="owner-type-card">
+                        <div class="owner-type-header">
+                            <span class="owner-type-badge contact">Contact</span>
+                        </div>
+                        <div class="owner-type-description">
+                            <p><strong>Eligibility:</strong> Any user in the organization</p>
+                            <p><strong>Permissions:</strong> Read-only access to application information. Cannot modify apps or make any changes to configuration.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="owner-type-card">
+                        <div class="owner-type-header">
+                            <span class="owner-type-badge sponsor">Sponsor</span>
+                        </div>
+                        <div class="owner-type-description">
+                            <p><strong>Eligibility:</strong> Business stakeholders and application sponsors</p>
+                            <p><strong>Permissions:</strong> Authorized for lifecycle management including enable/disable application and soft delete/restore operations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="owner-type-card">
+                        <div class="owner-type-header">
+                            <span class="owner-type-badge technical-owner">Technical Owner</span>
+                        </div>
+                        <div class="owner-type-description">
+                            <p><strong>Eligibility:</strong> Technical staff and developers</p>
+                            <p><strong>Permissions:</strong> Can modify application configuration, certificates, and technical settings. Cannot add other owners, assign users/groups, or grant permissions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="owner-type-card">
+                        <div class="owner-type-header">
+                            <span class="owner-type-badge full-owner">Full Owner</span>
+                        </div>
+                        <div class="owner-type-description">
+                            <p><strong>Eligibility:</strong> Application administrators and IT managers</p>
+                            <p><strong>Permissions:</strong> Complete administrative control including all configuration changes, user/group assignments, permission grants, and owner management.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
     
@@ -2403,6 +2464,32 @@ document.addEventListener('click', function(event) {
 
 // Make settings functions globally available
 window.toggleSettingsDropdown = toggleSettingsDropdown;
+
+// Help Overlay Functions
+function openHelpOverlay() {
+    const overlay = document.getElementById('help-overlay');
+    if (overlay) {
+        overlay.style.display = 'flex';
+        
+        // Add click outside to close functionality
+        overlay.addEventListener('click', function(event) {
+            if (event.target === overlay) {
+                closeHelpOverlay();
+            }
+        });
+    }
+}
+
+function closeHelpOverlay() {
+    const overlay = document.getElementById('help-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+// Make help functions globally available
+window.openHelpOverlay = openHelpOverlay;
+window.closeHelpOverlay = closeHelpOverlay;
 
 // Dark Mode Functions
 function initializeDarkMode() {
