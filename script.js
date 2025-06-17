@@ -712,7 +712,7 @@ function showTenantOverview() {
             <div class="overview-grid">
                 <div class="overview-card" onclick="showEnterpriseApps()">
                     <div class="card-header">
-                        <div class="card-icon blue">
+                        <div class="card-icon dark-blue">
                             <i class="fas fa-th-large"></i>
                         </div>
                         <div class="card-title">Enterprise applications</div>
@@ -731,8 +731,7 @@ function showTenantOverview() {
                         </div>
                     </div>
                 </div>
-                
-                <div class="overview-card" onclick="showAppRegistrations()">
+                  <div class="overview-card" onclick="showAppRegistrations()">
                     <div class="card-header">
                         <div class="card-icon green">
                             <i class="fas fa-cube"></i>
@@ -754,10 +753,32 @@ function showTenantOverview() {
                     </div>
                 </div>
                 
-                <div class="overview-card">
+                <div class="overview-card" onclick="showGroups()">
                     <div class="card-header">
                         <div class="card-icon purple">
                             <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-title">Groups</div>
+                    </div>
+                    <p class="card-description">
+                        Manage group memberships, assign owners, and control access to resources.
+                    </p>
+                    <div class="card-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">${groups.length}</div>
+                            <div class="stat-label">Total Groups</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">${groups.reduce((sum, group) => sum + group.members, 0)}</div>
+                            <div class="stat-label">Members</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overview-card">
+                    <div class="card-header">
+                        <div class="card-icon blue">
+                            <i class="fas fa-user"></i>
                         </div>
                         <div class="card-title">Users</div>
                     </div>
@@ -2644,6 +2665,22 @@ function initializeDarkMode() {
     applyDarkModeGlobally(savedDarkMode);
 }
 
+// Demo Stage 2 Functions
+function initializeDemoStage2() {
+    const demoStage2Toggle = document.getElementById('demo-stage-2-toggle');
+    const savedDemoStage2 = localStorage.getItem('demoStage2') === 'true';
+    
+    if (demoStage2Toggle) {
+        demoStage2Toggle.checked = savedDemoStage2;
+        demoStage2Toggle.addEventListener('change', function() {
+            const isDemoStage2 = this.checked;
+            localStorage.setItem('demoStage2', isDemoStage2);
+            // TODO: Add demo stage 2 functionality here
+            console.log('Demo stage 2:', isDemoStage2 ? 'enabled' : 'disabled');
+        });
+    }
+}
+
 function applyDarkModeGlobally(isDarkMode) {
     const body = document.body;
     const mainContent = document.getElementById('main-content');
@@ -2663,5 +2700,8 @@ function applyDarkModeGlobally(isDarkMode) {
     }
 }
 
-// Initialize dark mode when DOM is loaded
-document.addEventListener('DOMContentLoaded', initializeDarkMode);
+// Initialize dark mode and demo stage 2 when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDarkMode();
+    initializeDemoStage2();
+});

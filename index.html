@@ -30,13 +30,22 @@
             <button class="nav-icon-btn"><i class="fas fa-bell"></i></button>
             <button class="nav-icon-btn" onclick="openHelpOverlay()"><i class="fas fa-question-circle"></i></button>
             <div class="settings-dropdown">
-                <button class="nav-icon-btn" onclick="toggleSettingsDropdown()"><i class="fas fa-cog"></i></button>
+                <button class="nav-icon-btn" onclick="toggleSettingsDropdown()"><i class="fas fa-cog"></i></button>                
                 <div class="settings-dropdown-content" id="settings-dropdown">
                     <div class="settings-item">
                         <label class="settings-toggle">
                             <span>Dark mode</span>
                             <div class="toggle-switch">
                                 <input type="checkbox" id="dark-mode-toggle">
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="settings-item">
+                        <label class="settings-toggle">
+                            <span>Enable demo stage 2</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="demo-stage-2-toggle">
                                 <span class="toggle-slider"></span>
                             </div>
                         </label>
@@ -73,8 +82,9 @@
                 <div class="nav-item">
                     <i class="fas fa-user"></i>
                     <span>Users</span>
-                </div>                <div class="nav-item" onclick="showGroups()">
-                    <i class="fas fa-users-cog"></i>
+                </div>                
+                <div class="nav-item" onclick="showGroups()">
+                    <i class="fas fa-users"></i>
                     <span>Groups</span>
                 </div>
                 <div class="nav-item">
@@ -179,7 +189,7 @@
                 This demo focuses on app owner improvements. Don't worry about missing or broken features in other areas.<br><br>
                 Please navigate to an enterprise app or app registration and try the following actions:
                 <ul>
-                    <li>Observe the owner type details on the owner page</li>
+                    <li>Observe the owner type details on the page</li>
                     <li>Add a new individual owner</li>
                     <li>Add a group as an ower</li>
                     <li>Remove an owner</li>

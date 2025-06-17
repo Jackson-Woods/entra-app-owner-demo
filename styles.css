@@ -405,9 +405,15 @@ body {
 }
 
 .card-icon.blue { background-color: #0078d4; }
+.card-icon.dark-blue { background-color: #0d3a8b; }
 .card-icon.green { background-color: #107c10; }
 .card-icon.purple { background-color: #5c2d91; }
-.card-icon.orange { background-color: #d83b01; }
+.card-icon.orange { background-color: #d85701; }
+.card-icon.gold { background-color: #b39804; }
+.card-icon.pink { background-color: #b800be; }
+.card-icon.dark-green { background-color: #004712; }
+.card-icon.gray { background-color: #605e5c; }
+.card-icon.teal { background-color: #0a7570; }
 
 .card-title {
     font-size: 18px;
