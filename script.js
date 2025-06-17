@@ -376,24 +376,23 @@ const availableUsers = [
     { id: 'user9', name: 'Lisa Garcia', email: 'lisa.garcia@contoso.com', type: 'user' },
     { id: 'user10', name: 'Tom Wilson', email: 'tom.wilson@contoso.com', type: 'user' },
     { id: 'user11', name: 'Kate Anderson', email: 'kate.anderson@contoso.com', type: 'user' },
-    { id: 'user12', name: 'John Martinez', email: 'john.martinez@contoso.com', type: 'user' },
-    // Groups available for owner assignment
-    { id: 'g1', name: 'Sales Team', description: 'Sales department members', type: 'group' },
-    { id: 'g2', name: 'Marketing Department', description: 'Marketing team and contractors', type: 'group' },
-    { id: 'g3', name: 'Entra Administrators', description: 'IT department with administrative privileges', type: 'group' },
-    { id: 'g7', name: 'Global Administrators', description: 'Users with global administrator privileges', type: 'group' },
-    { id: 'g11', name: 'EMEA IT Support', description: 'IT support team for Europe, Middle East, and Africa region', type: 'group' },
-    { id: 'g14', name: 'APAC Regional IT', description: 'Asia-Pacific regional IT team for Singapore, Tokyo, and Sydney offices', type: 'group' },
-    { id: 'g15', name: 'Central IT Operations', description: 'Central IT operations team for Chicago and Dallas offices', type: 'group' },
-    { id: 'g16', name: 'Canada IT Support', description: 'IT support team for Toronto and Vancouver offices', type: 'group' },
-    { id: 'g4', name: 'HR Department', description: 'Human resources team', type: 'group' },
-    { id: 'g5', name: 'Finance Team', description: 'Financial planning and accounting team', type: 'group' },
-    { id: 'g6', name: 'Engineering Leads', description: 'Senior engineering leadership team', type: 'group' },
-    { id: 'g8', name: 'Security Team', description: 'Information security specialists', type: 'group' },
-    { id: 'g9', name: 'Product Managers', description: 'Product management team', type: 'group' },
-    { id: 'g10', name: 'Customer Support', description: 'Customer service representatives', type: 'group' },
-    { id: 'g12', name: 'Business Analysts', description: 'Business analysis and requirements team', type: 'group' },
-    { id: 'g13', name: 'Legal Department', description: 'Legal and compliance team', type: 'group' }
+    { id: 'user12', name: 'John Martinez', email: 'john.martinez@contoso.com', type: 'user' },    // Groups available for owner assignment
+    { id: 'g1', name: 'Sales Team', email: 'sales.team@contoso.com', description: 'Sales department members', type: 'group' },
+    { id: 'g2', name: 'Marketing Department', email: 'marketing.department@contoso.com', description: 'Marketing team and contractors', type: 'group' },
+    { id: 'g3', name: 'Entra Administrators', email: 'entra.administrators@contoso.com', description: 'IT department with administrative privileges', type: 'group' },
+    { id: 'g7', name: 'Global Administrators', email: 'global.administrators@contoso.com', description: 'Users with global administrator privileges', type: 'group' },
+    { id: 'g11', name: 'EMEA IT Support', email: 'emea.it.support@contoso.com', description: 'IT support team for Europe, Middle East, and Africa region', type: 'group' },
+    { id: 'g14', name: 'APAC Regional IT', email: 'apac.regional.it@contoso.com', description: 'Asia-Pacific regional IT team for Singapore, Tokyo, and Sydney offices', type: 'group' },
+    { id: 'g15', name: 'Central IT Operations', email: 'central.it.operations@contoso.com', description: 'Central IT operations team for Chicago and Dallas offices', type: 'group' },
+    { id: 'g16', name: 'Canada IT Support', email: 'canada.it.support@contoso.com', description: 'IT support team for Toronto and Vancouver offices', type: 'group' },
+    { id: 'g4', name: 'HR Department', email: 'hr.department@contoso.com', description: 'Human resources team', type: 'group' },
+    { id: 'g5', name: 'Finance Team', email: 'finance.team@contoso.com', description: 'Financial planning and accounting team', type: 'group' },
+    { id: 'g6', name: 'Engineering Leads', email: 'engineering.leads@contoso.com', description: 'Senior engineering leadership team', type: 'group' },
+    { id: 'g8', name: 'Security Team', email: 'security.team@contoso.com', description: 'Information security specialists', type: 'group' },
+    { id: 'g9', name: 'Product Managers', email: 'product.managers@contoso.com', description: 'Product management team', type: 'group' },
+    { id: 'g10', name: 'Customer Support', email: 'customer.support@contoso.com', description: 'Customer service representatives', type: 'group' },
+    { id: 'g12', name: 'Business Analysts', email: 'business.analysts@contoso.com', description: 'Business analysis and requirements team', type: 'group' },
+    { id: 'g13', name: 'Legal Department', email: 'legal.department@contoso.com', description: 'Legal and compliance team', type: 'group' }
 ];
 
 // Modal state
@@ -2102,17 +2101,43 @@ function closeAddOwnerModal(event) {
     // Reset state
     selectedOwnersForModal = [];
     currentModalContext = null;
-    
-    // Clear search
+      // Clear search
     const searchInput = document.getElementById('owner-search');
     if (searchInput) {
         searchInput.value = '';
     }
     
-    // Extended cleanup delay to prevent race conditions
+    // Reset modal title and button text for add mode
+    const modalTitle = modal.querySelector('.modal-title');
+    const addButton = modal.querySelector('#add-owners-btn');
+    if (modalTitle) {
+        modalTitle.textContent = 'Add owners';
+    }
+    if (addButton) {
+        addButton.textContent = 'Add owners';
+    }
+      // Reset owner type dropdown to default
+    const ownerTypeSelect = document.getElementById('owner-type-select');
+    if (ownerTypeSelect) {
+        ownerTypeSelect.value = 'Contact';
+    }
+    
+    // Clear selected owners display
+    const selectedOwnersContainer = document.getElementById('selected-owners');
+    if (selectedOwnersContainer) {
+        selectedOwnersContainer.innerHTML = '<div class="no-selection">No owners selected</div>';
+    }
+    
+    // Clear search results
+    const searchResults = document.getElementById('search-results');
+    if (searchResults) {
+        searchResults.innerHTML = '<div class="no-results">Start typing to search for users or groups</div>';
+    }
+      // Extended cleanup delay to prevent race conditions
     setTimeout(() => {
         if (modal) {
             modal.removeAttribute('data-closing');
+            modal.removeAttribute('data-edit-mode'); // Clear edit mode flag
         }
     }, 300);
     
@@ -2291,16 +2316,11 @@ function addSelectedOwners() {
         return false;
     }
     
+    const modal = document.getElementById('add-owner-modal');
+    const isEditMode = modal && modal.hasAttribute('data-edit-mode');
+    
     const ownerTypeSelect = document.getElementById('owner-type-select');
     const ownerType = ownerTypeSelect ? ownerTypeSelect.value : 'Full Owner';
-    
-    // Convert selected items to owner objects with proper structure
-    const newOwners = selectedOwnersForModal.map(item => ({
-        id: item.id,
-        name: item.name,
-        email: item.email || `${item.name.toLowerCase().replace(/\s+/g, '.')}@contoso.com`,
-        type: ownerType
-    }));
     
     // Find target object based on context
     let targetObject = null;
@@ -2317,9 +2337,31 @@ function addSelectedOwners() {
         return false;
     }
     
-    // Add the new owners
-    targetObject.owners.push(...newOwners);
-    console.log('Owners after addition:', targetObject.owners);
+    if (isEditMode) {
+        // Edit mode: Update existing owner's type
+        const selectedOwner = selectedOwnersForModal[0]; // Should only have one in edit mode
+        const existingOwner = targetObject.owners.find(owner => owner.id === selectedOwner.id);
+        
+        if (existingOwner) {
+            const oldType = existingOwner.type;
+            existingOwner.type = ownerType;
+            console.log(`Updated owner ${existingOwner.name} type from ${oldType} to ${ownerType}`);
+        } else {
+            console.error('Existing owner not found for editing:', selectedOwner.id);
+            return false;
+        }
+    } else {
+        // Add mode: Add new owners
+        const newOwners = selectedOwnersForModal.map(item => ({
+            id: item.id,
+            name: item.name,
+            email: item.email || `${item.name.toLowerCase().replace(/\s+/g, '.')}@contoso.com`,
+            type: ownerType
+        }));
+        
+        targetObject.owners.push(...newOwners);
+    }    
+    console.log('Owners after operation:', targetObject.owners);
     
     // Save context before closing modal (since closeAddOwnerModal clears it)
     const savedContext = { ...currentModalContext };
@@ -2328,21 +2370,26 @@ function addSelectedOwners() {
     // Close modal first
     closeAddOwnerModal();
     
-    // Refresh the current view to show new owners using saved context
+    // Refresh the current view to show updated owners using saved context
     try {
         if (savedContext.type === 'group') {
             showGroupOwnersPage(savedContext.id);
         } else {
             showAppOwnersPage(savedContext.type, savedContext.id);
         }
-        console.log('Refreshed view to show new owners');
+        console.log('Refreshed view to show updated owners');
     } catch (error) {
         console.log('Error refreshing view:', error);
         console.error('Refresh error details:', error);
     }
     
-    // Show success notification
-    showNotification(`Successfully added ${newOwners.length} owner(s) to ${targetObject.name}`, 'success');
+    // Show success notification based on mode
+    if (isEditMode) {
+        showNotification(`Successfully updated owner type for ${targetObject.name}`, 'success');
+    } else {
+        const addedCount = selectedOwnersForModal.length;
+        showNotification(`Successfully added ${addedCount} owner(s) to ${targetObject.name}`, 'success');
+    }
     
     return true;
 }
@@ -2415,19 +2462,109 @@ function updateSearchResults() {
 
 function editOwnerType(ownerId) {
     console.log('📝 editOwnerType called with ownerId:', ownerId);
-    console.log('📝 Arguments received:', arguments);
-    console.log('📝 Arguments length:', arguments.length);
     
-    // Add debugging to make sure the function is actually being called
-    console.log('🚨 About to show alert dialog');
-    
-    try {
-        // Show a simple alert dialog informing the user this feature isn't implemented
-        alert('Feature Not Implemented\n\nThe ability to edit owner types is not yet available. You can remove and re-add owners with different types instead.');
-        console.log('🚨 Alert dialog was shown successfully');
-    } catch (error) {
-        console.error('❌ Error showing alert:', error);
+    const modal = document.getElementById('add-owner-modal');
+    if (!modal) {
+        console.error('Add owner modal not found');
+        return false;
     }
+    
+    // Check if modal is already open or closing
+    if (modal.hasAttribute('data-closing')) {
+        console.log('Modal is currently closing - ignoring open request');
+        return false;
+    }
+    
+    if (modal.style.display === 'flex') {
+        console.log('Modal is already open - ignoring duplicate open request');
+        return false;
+    }
+    
+    // Set modal context based on current page
+    if (currentPage === 'app-owners' && currentApp) {
+        currentModalContext = {
+            type: currentApp.type,
+            id: currentApp.data.id
+        };
+    } else if (currentPage === 'group-owners' && currentGroup) {
+        currentModalContext = {
+            type: 'group',
+            id: currentGroup.id
+        };
+    } else {
+        console.error('No valid context for editing owner type');
+        return false;
+    }    // Find the owner being edited
+    let ownerToEdit = null;
+    if (currentApp && currentApp.data.owners) {
+        ownerToEdit = currentApp.data.owners.find(owner => owner.id === ownerId);
+    } else if (currentGroup && currentGroup.owners) {
+        ownerToEdit = currentGroup.owners.find(owner => owner.id === ownerId);
+    }
+    
+    if (!ownerToEdit) {
+        console.error('Owner not found for editing:', ownerId);
+        return false;
+    }// Find the owner in availableUsers to get the full info
+    const ownerInfo = availableUsers.find(user => user.id === ownerId);
+    
+    if (!ownerInfo) {
+        console.error('Owner info not found in availableUsers:', ownerId);
+        return false;
+    }
+      // Pre-select the owner in the modal
+    selectedOwnersForModal = [{
+        id: ownerInfo.id,
+        name: ownerInfo.name,
+        email: ownerInfo.email || ownerToEdit.email || `${ownerInfo.name.toLowerCase().replace(/\s+/g, '.')}@contoso.com`,
+        type: ownerInfo.type,
+        currentOwnerType: ownerToEdit.type // Store the current owner type for potential updating
+    }];
+    
+    // Clear search
+    const searchInput = document.getElementById('owner-search');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    const searchResults = document.getElementById('search-results');
+    if (searchResults) {
+        searchResults.innerHTML = '<div class="no-results">Start typing to search for users or groups</div>';
+    }    // Update the selected owners display
+    updateSelectedOwners();
+      // Set the owner type dropdown to the current owner's type
+    const ownerTypeSelect = document.getElementById('owner-type-select');
+    if (ownerTypeSelect && ownerToEdit.type) {
+        ownerTypeSelect.value = ownerToEdit.type;
+    }
+    
+    // Validate the owner selection (for warnings and button state)
+    validateOwnerSelection();
+    
+    // Update modal title and button for edit mode
+    const modalTitle = modal.querySelector('.modal-title');
+    const addButton = modal.querySelector('#add-owners-btn');
+    if (modalTitle) {
+        modalTitle.textContent = 'Edit owner type';
+    }
+    if (addButton) {
+        addButton.textContent = 'Update owner';
+    }
+    
+    // Clear any residual closing state
+    modal.removeAttribute('data-closing');
+    
+    // Show modal
+    modal.style.display = 'flex';
+    modal.setAttribute('data-just-opened', 'true');
+    modal.setAttribute('data-edit-mode', 'true'); // Flag to indicate edit mode
+    
+    // Remove protection after delay
+    setTimeout(() => {
+        modal.removeAttribute('data-just-opened');
+    }, 200);
+    
+    console.log('Modal opened in edit mode for owner:', ownerToEdit);
+    return true;
 }
 
 // Ensure this function is globally available immediately
