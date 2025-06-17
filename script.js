@@ -1353,7 +1353,7 @@ function showAppOwnersPage(appType, appId) {
                             <span class="owner-type-badge contact">Contact</span>
                         </div>
                         <div class="owner-type-description">
-                            <p><strong>Eligibility:</strong> Any user in the organization</p>
+                            <p><strong>Eligibility:</strong> Users, Groups</p>
                             <p><strong>Permissions:</strong> Read-only access to application information. Cannot modify apps or make any changes to configuration.</p>
                         </div>
                     </div>
@@ -1363,7 +1363,7 @@ function showAppOwnersPage(appType, appId) {
                             <span class="owner-type-badge sponsor">Sponsor</span>
                         </div>
                         <div class="owner-type-description">
-                            <p><strong>Eligibility:</strong> Business stakeholders and application sponsors</p>
+                            <p><strong>Eligibility:</strong> Users, Groups</p>
                             <p><strong>Permissions:</strong> Authorized for lifecycle management including enable/disable application and soft delete/restore operations.</p>
                         </div>
                     </div>
@@ -1373,7 +1373,7 @@ function showAppOwnersPage(appType, appId) {
                             <span class="owner-type-badge technical-owner">Technical Owner</span>
                         </div>
                         <div class="owner-type-description">
-                            <p><strong>Eligibility:</strong> Technical staff and developers</p>
+                            <p><strong>Eligibility:</strong> Users, Groups</p>
                             <p><strong>Permissions:</strong> Can modify application configuration, certificates, and technical settings. Cannot add other owners, assign users/groups, or grant permissions.</p>
                         </div>
                     </div>
@@ -1383,7 +1383,7 @@ function showAppOwnersPage(appType, appId) {
                             <span class="owner-type-badge full-owner">Full Owner</span>
                         </div>
                         <div class="owner-type-description">
-                            <p><strong>Eligibility:</strong> Application administrators and IT managers</p>
+                            <p><strong>Eligibility:</strong> Users only</p>
                             <p><strong>Permissions:</strong> Complete administrative control including all configuration changes, user/group assignments, permission grants, and owner management.</p>
                         </div>
                     </div>
