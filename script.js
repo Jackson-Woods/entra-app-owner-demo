@@ -168,7 +168,7 @@ const groups = [
         name: 'Sales Team',
         email: 'sales.team@contoso.com',
         description: 'Sales department members',
-        type: 'Security',
+        type: 'Microsoft 365',
         membershipType: 'Assigned',
         members: 45,        owners: [
             { name: 'Alice Johnson', email: 'alice.johnson@contoso.com', id: 'user1', type: 'Full Owner' },
@@ -192,7 +192,7 @@ const groups = [
         name: 'Entra Administrators',
         email: 'entra.administrators@contoso.com',
         description: 'IT department with administrative privileges',
-        type: 'Security',
+        type: 'Role-assignable security',
         membershipType: 'Assigned',
         members: 8,        owners: [
             { name: 'David Lee', email: 'david.lee@contoso.com', id: 'user4', type: 'Full Owner' }
@@ -204,7 +204,7 @@ const groups = [
         name: 'Finance Team',
         email: 'finance.team@contoso.com',
         description: 'Finance and accounting personnel',
-        type: 'Security',
+        type: 'Microsoft 365',
         membershipType: 'Assigned',
         members: 12,
         owners: [],
@@ -851,17 +851,29 @@ function showTenantConfiguration() {
                     <div class="config-section-header">
                         <h2 class="section-title">Owner Management Policies</h2>
                         <p class="section-description">Configure how application and group ownership is managed</p>
-                    </div>                    <div class="config-policies">
+                    </div>                      <div class="config-policies">
+                        <div class="policy-item">
+                            <div class="policy-header">
+                                <div class="policy-title">Allow security groups and Microsoft 365 groups as technical owners</div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="allow-groups-technical-owners">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="policy-description">Permit security groups and Microsoft 365 groups to be assigned as technical owners of applications and resources</p>
+                        </div>    
+                    
                         <div class="policy-item">
                             <div class="policy-header">
                                 <div class="policy-title">Orphaned resource alerts</div>
                                 <label class="toggle-switch">
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" id="orphaned-resource-alerts">
                                     <span class="toggle-slider"></span>
                                 </label>
                             </div>
                             <p class="policy-description">Send notifications when applications or groups have no owners assigned</p>
                         </div>
+                        
                     </div>
                 </div>
 
@@ -897,11 +909,16 @@ function showTenantConfiguration() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div>        </div>
     `;
     
     document.getElementById('main-content').innerHTML = content;
+    
+    // Initialize policy toggles after content is loaded
+    setTimeout(() => {
+        initializeTechnicalOwnersPolicy();
+        initializeOrphanedResourceAlertsPolicy();
+    }, 100);
 }
 
 // Make the function globally accessible
@@ -2007,6 +2024,24 @@ function getPrincipalType(ownerId) {
     return groupInfo ? groupInfo.type : 'Group';
 }
 
+// Check if a group is role-assignable
+function isRoleAssignableGroup(ownerId) {
+    const groupInfo = groups.find(group => group.id === ownerId);
+    return groupInfo && groupInfo.type === 'Role-assignable security';
+}
+
+// Check if the technical owners policy allows the group
+function isPolicyCompliantGroup(ownerId) {
+    const policyEnabled = localStorage.getItem('allowGroupsTechnicalOwners') === 'true';
+    
+    if (policyEnabled) {
+        return true; // Policy allows all groups
+    }
+    
+    // Policy disabled - only role-assignable groups allowed
+    return isRoleAssignableGroup(ownerId);
+}
+
 // Utility Functions
 function getInitials(name) {
     return name.split(' ').map(n => n[0]).join('').toUpperCase();
@@ -2079,8 +2114,7 @@ function addOwner(event) {
     // Reset modal state
     selectedOwnersForModal = [];
     updateSelectedOwners();
-    
-    // Clear search
+      // Clear search
     const searchInput = document.getElementById('owner-search');
     if (searchInput) {
         searchInput.value = '';
@@ -2089,6 +2123,15 @@ function addOwner(event) {
     if (searchResults) {
         searchResults.innerHTML = '<div class="no-results">Start typing to search for users or groups</div>';
     }
+    
+    // Clear all validation warnings
+    const fullOwnerWarning = document.getElementById('owner-validation-warning');
+    const technicalOwnerWarning = document.getElementById('technical-owner-warning');
+    const policyViolationWarning = document.getElementById('policy-violation-warning');
+    
+    if (fullOwnerWarning) fullOwnerWarning.style.display = 'none';
+    if (technicalOwnerWarning) technicalOwnerWarning.style.display = 'none';
+    if (policyViolationWarning) policyViolationWarning.style.display = 'none';
     
     // Clear any residual closing state
     modal.removeAttribute('data-closing');
@@ -2300,13 +2343,14 @@ function validateOwnerSelection() {
     const selectedOwners = selectedOwnersForModal;
     const ownerTypeSelect = document.getElementById('owner-type-select');
     const ownerType = ownerTypeSelect ? ownerTypeSelect.value : 'Full Owner';
-    
-    const fullOwnerWarning = document.getElementById('owner-validation-warning');
+      const fullOwnerWarning = document.getElementById('owner-validation-warning');
     const technicalOwnerWarning = document.getElementById('technical-owner-warning');
+    const policyViolationWarning = document.getElementById('policy-violation-warning');
     
     // Hide all warnings initially
     if (fullOwnerWarning) fullOwnerWarning.style.display = 'none';
     if (technicalOwnerWarning) technicalOwnerWarning.style.display = 'none';
+    if (policyViolationWarning) policyViolationWarning.style.display = 'none';
     
     // Check if any selected owners are Groups and the owner type is Full Owner
     const hasGroupAsFullOwner = selectedOwners.some(owner => 
@@ -2318,19 +2362,28 @@ function validateOwnerSelection() {
         owner.type === 'group' && ownerType === 'Technical Owner'
     );
     
+    // Check if any groups violate the technical owners policy (only for Technical Owner type)
+    const hasPolicyViolation = ownerType === 'Technical Owner' && selectedOwners.some(owner => 
+        owner.type === 'group' && !isPolicyCompliantGroup(owner.id)
+    );
+    
     // Show appropriate warnings
     if (hasGroupAsFullOwner && fullOwnerWarning) {
         fullOwnerWarning.style.display = 'block';
     }
     
-    if (hasGroupAsTechnicalOwner && technicalOwnerWarning) {
+    if (hasGroupAsTechnicalOwner && technicalOwnerWarning && !hasPolicyViolation) {
         technicalOwnerWarning.style.display = 'block';
     }
     
-    // Disable add button if groups are selected as Full Owner
+    if (hasPolicyViolation && policyViolationWarning) {
+        policyViolationWarning.style.display = 'block';
+    }
+    
+    // Disable add button if groups are selected as Full Owner or there's a policy violation
     const addButton = document.getElementById('add-owners-btn');
     if (addButton) {
-        addButton.disabled = hasGroupAsFullOwner || selectedOwners.length === 0;
+        addButton.disabled = hasGroupAsFullOwner || hasPolicyViolation || selectedOwners.length === 0;
     }
 }
 
@@ -2380,9 +2433,22 @@ function addSelectedOwners() {
         } else {
             console.error('Existing owner not found for editing:', selectedOwner.id);
             return false;
-        }
-    } else {
+        }    } else {
         // Add mode: Add new owners
+        
+        // Check policy compliance for technical owners (only affects apps, not groups)
+        if (ownerType === 'Technical Owner' && (currentModalContext.type === 'enterprise' || currentModalContext.type === 'registration')) {
+            const policyViolatingGroups = selectedOwnersForModal.filter(item => 
+                item.type === 'group' && !isPolicyCompliantGroup(item.id)
+            );
+            
+            if (policyViolatingGroups.length > 0) {
+                console.error('Policy violation: Cannot add non-role-assignable groups as technical owners when policy is disabled');
+                alert('Cannot add these groups as technical owners. Only role-assignable security groups are allowed when the policy is disabled.');
+                return false;
+            }
+        }
+        
         const newOwners = selectedOwnersForModal.map(item => ({
             id: item.id,
             name: item.name,
@@ -2391,7 +2457,7 @@ function addSelectedOwners() {
         }));
         
         targetObject.owners.push(...newOwners);
-    }    
+    }
     console.log('Owners after operation:', targetObject.owners);
     
     // Save context before closing modal (since closeAddOwnerModal clears it)
@@ -2551,8 +2617,7 @@ function editOwnerType(ownerId) {
         type: ownerInfo.type,
         currentOwnerType: ownerToEdit.type // Store the current owner type for potential updating
     }];
-    
-    // Clear search
+      // Clear search
     const searchInput = document.getElementById('owner-search');
     if (searchInput) {
         searchInput.value = '';
@@ -2560,7 +2625,18 @@ function editOwnerType(ownerId) {
     const searchResults = document.getElementById('search-results');
     if (searchResults) {
         searchResults.innerHTML = '<div class="no-results">Start typing to search for users or groups</div>';
-    }    // Update the selected owners display
+    }
+    
+    // Clear all validation warnings initially
+    const fullOwnerWarning = document.getElementById('owner-validation-warning');
+    const technicalOwnerWarning = document.getElementById('technical-owner-warning');
+    const policyViolationWarning = document.getElementById('policy-violation-warning');
+    
+    if (fullOwnerWarning) fullOwnerWarning.style.display = 'none';
+    if (technicalOwnerWarning) technicalOwnerWarning.style.display = 'none';
+    if (policyViolationWarning) policyViolationWarning.style.display = 'none';
+    
+    // Update the selected owners display
     updateSelectedOwners();
       // Set the owner type dropdown to the current owner's type
     const ownerTypeSelect = document.getElementById('owner-type-select');
@@ -2691,6 +2767,40 @@ function initializeDemoStage2() {
     }
 }
 
+// Technical Owners Policy Functions
+function initializeTechnicalOwnersPolicy() {
+    const technicalOwnersToggle = document.getElementById('allow-groups-technical-owners');
+    const savedTechnicalOwnersPolicy = localStorage.getItem('allowGroupsTechnicalOwners') === 'true';
+    
+    if (technicalOwnersToggle) {
+        technicalOwnersToggle.checked = savedTechnicalOwnersPolicy;
+        technicalOwnersToggle.addEventListener('change', function() {
+            const isAllowed = this.checked;
+            localStorage.setItem('allowGroupsTechnicalOwners', isAllowed);
+            // TODO: Add policy enforcement functionality here
+            console.log('Allow groups as technical owners:', isAllowed ? 'enabled' : 'disabled');
+        });
+    }
+}
+
+// Orphaned Resource Alerts Policy Functions
+function initializeOrphanedResourceAlertsPolicy() {
+    const orphanedAlertsToggle = document.getElementById('orphaned-resource-alerts');
+    const savedOrphanedAlertsPolicy = localStorage.getItem('orphanedResourceAlerts');
+    
+    // Default to enabled if no saved preference
+    const isEnabled = savedOrphanedAlertsPolicy === null ? true : savedOrphanedAlertsPolicy === 'true';
+    
+    if (orphanedAlertsToggle) {
+        orphanedAlertsToggle.checked = isEnabled;
+        orphanedAlertsToggle.addEventListener('change', function() {
+            const isAllowed = this.checked;
+            localStorage.setItem('orphanedResourceAlerts', isAllowed);
+            console.log('Orphaned resource alerts:', isAllowed ? 'enabled' : 'disabled');
+        });
+    }
+}
+
 function applyDarkModeGlobally(isDarkMode) {
     const body = document.body;
     const mainContent = document.getElementById('main-content');
@@ -2710,8 +2820,10 @@ function applyDarkModeGlobally(isDarkMode) {
     }
 }
 
-// Initialize dark mode and demo stage 2 when DOM is loaded
+// Initialize settings and policies when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initializeDarkMode();
     initializeDemoStage2();
+    initializeTechnicalOwnersPolicy();
+    initializeOrphanedResourceAlertsPolicy();
 });
