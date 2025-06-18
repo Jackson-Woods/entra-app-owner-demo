@@ -1306,19 +1306,18 @@ function showAppOwnersPage(appType, appId) {
     });
     
     const ownersContent = app.owners.length > 0 
-        ? `
-            <div class="app-table-container">
+        ? `            <div class="app-table-container">
                 <table class="app-table">
                     <thead>
                         <tr>
                             <th>Owner</th>
                             <th>Email</th>
+                            <th>Principal</th>
                             <th>Type</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>                        ${app.owners.map(owner => `
-                            <tr>
+                    <tbody>                        ${app.owners.map(owner => `                            <tr>
                                 <td>
                                     <div class="owner-display">
                                         ${getOwnerAvatarHtml(owner)}
@@ -1327,6 +1326,9 @@ function showAppOwnersPage(appType, appId) {
                                 </td>
                                 <td>
                                     <span class="owner-email">${owner.email}</span>                                </td>
+                                <td>
+                                    <span class="owner-principal">${getPrincipalType(owner.id)}</span>
+                                </td>
                                 <td>
                                     <span class="owner-type ${(owner.type || 'Owner').toLowerCase().replace(/ /g, '-')}">${owner.type || 'Owner'}</span>
                                 </td>                                <td>
@@ -1629,11 +1631,6 @@ function generateAppOverviewContent(app, appType) {
     }
 }
 
-
-
-
-
-
 // Group management functions
 function filterGroups(searchTerm) {
     const rows = document.querySelectorAll('#groups-tbody tr');
@@ -1705,7 +1702,7 @@ function showGroupOverview(groupId) {
             </div>
             
             <div class="app-content">
-                ${renderGroupOverviewTab(group)}
+                               ${renderGroupOverviewTab(group)}
             </div>
         </div>
     `;
@@ -1800,16 +1797,15 @@ function showGroupOwnersPage(groupId) {
     
     const ownersContent = group.owners.length > 0 ? `
         <div class="app-table-container">
-            <table class="app-table">
-                <thead>
+            <table class="app-table">                <thead>
                     <tr>
                         <th>Owner</th>
                         <th>Email</th>
+                        <th>Principal</th>
                         <th>Type</th>
                         <th>Actions</th>
                     </tr>
-                </thead>                <tbody>
-                    ${group.owners.map(owner => `
+                </thead>                <tbody>                    ${group.owners.map(owner => `
                         <tr>
                             <td>
                                 <div class="owner-display">
@@ -1819,6 +1815,9 @@ function showGroupOwnersPage(groupId) {
                             </td>
                             <td>
                                 <span class="owner-email">${owner.email}</span>
+                            </td>
+                            <td>
+                                <span class="owner-principal">${getPrincipalType(owner.id)}</span>
                             </td>
                             <td>
                                 <span class="owner-type">${owner.type || 'Owner'}</span>
@@ -1993,6 +1992,19 @@ function renderGroupOwnersTab(group) {
     window.updateSearchResults = updateSearchResults;
     window.updateSelectedOwners = updateSelectedOwners;
     window.removeOwner = removeOwner;
+}
+
+// Get the principal type for display (User or specific group type)
+function getPrincipalType(ownerId) {
+    const ownerInfo = availableUsers.find(user => user.id === ownerId);
+    
+    if (!ownerInfo || ownerInfo.type !== 'group') {
+        return 'User';
+    }
+    
+    // Find the actual group to get its specific type
+    const groupInfo = groups.find(group => group.id === ownerId);
+    return groupInfo ? groupInfo.type : 'Group';
 }
 
 // Utility Functions
@@ -2188,8 +2200,7 @@ function searchPotentialOwners(query) {
     if (matches.length === 0) {
         searchResults.innerHTML = '<div class="no-results">No users or groups found</div>';
         return;
-    }
-      // Render search results
+    }    // Render search results
     searchResults.innerHTML = matches.map(user => `
         <div class="search-result-item" onclick="selectOwnerFromSearch('${user.id}', '${user.name}', '${user.email || user.description || ''}', '${user.type}', event)">
             <div class="result-avatar">
@@ -2198,7 +2209,7 @@ function searchPotentialOwners(query) {
             <div class="result-info">
                 <div class="result-name">${user.name}</div>
                 <div class="result-email">${user.type === 'group' ? (user.description || '') : (user.email || '')}</div>
-                <div class="result-type">${user.type === 'group' ? 'Group' : 'User'}</div>
+                <div class="result-type">${getPrincipalType(user.id)}</div>
             </div>
         </div>
     `).join('');
@@ -2247,8 +2258,7 @@ function updateSelectedOwners() {
         }
         return;
     }
-    
-    container.innerHTML = selectedOwnersForModal.map(owner => `
+      container.innerHTML = selectedOwnersForModal.map(owner => `
         <div class="selected-owner-item">
             <div class="selected-avatar">
                 ${owner.type === 'group' ? '<i class="fas fa-users"></i>' : getInitials(owner.name)}
@@ -2256,7 +2266,7 @@ function updateSelectedOwners() {
             <div class="selected-info">
                 <div class="selected-name">${owner.name}</div>
                 <div class="selected-email">${owner.email}</div>
-                <div class="selected-type">${owner.type === 'group' ? 'Group' : 'User'}</div>
+                <div class="selected-type">${getPrincipalType(owner.id)}</div>
             </div>            <button class="remove-selected-btn" onclick="removeSelectedOwner('${owner.id}', event)" title="Remove">
                 <i class="fas fa-times"></i>
             </button>
