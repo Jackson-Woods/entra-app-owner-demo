@@ -4,6 +4,29 @@ let currentApp = null;
 let currentGroup = null;
 let sidebarCollapsed = false;
 
+// Helper function to filter technical owners based on feature flag
+function filterTechnicalOwners(apps) {
+    if (isTechnicalOwnerFeatureEnabled()) {
+        return apps; // Return all data as-is if feature is enabled
+    }
+    
+    // Filter out technical owners if feature is disabled
+    return apps.map(app => ({
+        ...app,
+        owners: app.owners.filter(owner => owner.type !== 'Technical Owner')
+    }));
+}
+
+// Helper function to get filtered enterprise apps
+function getEnterpriseApps() {
+    return filterTechnicalOwners(enterpriseAppsBase);
+}
+
+// Helper function to get filtered app registrations
+function getAppRegistrations() {
+    return filterTechnicalOwners(appRegistrationsBase);
+}
+
 // Sample Data
 const tenantData = {
     name: "Contoso",
@@ -14,7 +37,7 @@ const tenantData = {
     devices: 892
 };
 
-const enterpriseApps = [
+const enterpriseAppsBase = [
     {
         id: 'ea1',
         name: 'Microsoft Office 365',
@@ -103,7 +126,7 @@ const enterpriseApps = [
     }
 ];
 
-const appRegistrations = [
+const appRegistrationsBase = [
     {
         id: 'ar1',
         name: 'Contoso Sales Dashboard',
@@ -162,7 +185,7 @@ const appRegistrations = [
     }
 ];
 
-const groups = [
+const groupsBase = [
     {
         id: 'g1',
         name: 'Sales Team',
@@ -362,6 +385,26 @@ const groups = [
         created: '2024-03-25'
     }
 ];
+
+// Helper function to get filtered groups
+function getGroups() {
+    return filterTechnicalOwners(groupsBase);
+}
+
+// Dynamic arrays that filter technical owners based on feature flag
+let enterpriseApps = [];
+let appRegistrations = [];
+let groups = [];
+
+// Function to update dynamic arrays
+function updateDynamicArrays() {
+    enterpriseApps = getEnterpriseApps();
+    appRegistrations = getAppRegistrations();
+    groups = getGroups();
+}
+
+// Initialize dynamic arrays
+updateDynamicArrays();
 
 // Sample users and groups for owner selection
 const availableUsers = [
@@ -840,18 +883,11 @@ function showTenantConfiguration() {
     updateNavigation('tenant-configuration');
     clearSubNavigation(); // Clear any app/group sub-navigation
     
-    const content = `
-        <div class="page-container">
-            <div class="page-header">
-                <h1 class="page-title">Tenant configuration</h1>
-                <p class="page-subtitle">Configure tenant-wide settings and policies</p>
-            </div>
-              <div class="config-sections">
-                <div class="config-section">
-                    <div class="config-section-header">
-                        <h2 class="section-title">Owner Management Policies</h2>
-                        <p class="section-description">Configure how application and group ownership is managed</p>
-                    </div>                      <div class="config-policies">                        <div class="policy-item">
+    // Check if technical owner features should be shown
+    const showTechnicalOwnerFeatures = isTechnicalOwnerFeatureEnabled();
+    
+    const technicalOwnerPolicySection = showTechnicalOwnerFeatures ? `
+                        <div class="policy-item">
                             <div class="policy-header">
                                 <div class="policy-title">Allow security groups and Microsoft 365 groups as technical owners</div>
                                 <label class="toggle-switch">
@@ -859,7 +895,7 @@ function showTenantConfiguration() {
                                     <span class="toggle-slider"></span>
                                 </label>
                             </div>
-                            <p class="policy-description">Permit security groups and Microsoft 365 groups to be assigned as technical owners of applications and resources</p>
+                            <p class="policy-description">Permit standard security groups and Microsoft 365 groups to be assigned as technical owners of applications and resources</p>
                             
                             <div class="technical-owner-permissions">
                                 <label class="permissions-label">Technical owner allowed access</label>
@@ -882,7 +918,20 @@ function showTenantConfiguration() {
                                     </label>
                                 </div>
                             </div>
-                        </div>    
+                        </div>` : '';
+    
+    const content = `
+        <div class="page-container">
+            <div class="page-header">
+                <h1 class="page-title">Tenant configuration</h1>
+                <p class="page-subtitle">Configure tenant-wide settings and policies</p>
+            </div>
+              <div class="config-sections">
+                <div class="config-section">
+                    <div class="config-section-header">
+                        <h2 class="section-title">Owner Management Policies</h2>
+                        <p class="section-description">Configure how application and group ownership is managed</p>
+                    </div>                      <div class="config-policies">                        ${technicalOwnerPolicySection}
                     
                         <div class="policy-item">
                             <div class="policy-header">
@@ -933,12 +982,13 @@ function showTenantConfiguration() {
             </div>        </div>
     `;
     
-    document.getElementById('main-content').innerHTML = content;
-      // Initialize policy toggles after content is loaded
+    document.getElementById('main-content').innerHTML = content;      // Initialize policy toggles after content is loaded
     setTimeout(() => {
-        initializeTechnicalOwnersPolicy();
+        if (showTechnicalOwnerFeatures) {
+            initializeTechnicalOwnersPolicy();
+            initializeTechnicalOwnerPermissions();
+        }
         initializeOrphanedResourceAlertsPolicy();
-        initializeTechnicalOwnerPermissions();
     }, 100);
 }
 
@@ -1405,8 +1455,7 @@ function showAppOwnersPage(appType, appId) {
             </div>
             
             ${ownersContent}
-            
-            <div class="owner-types-info">
+              <div class="owner-types-info">
                 <h3 class="info-title">Owner Types & Permissions</h3>
                 <div class="owner-type-grid">
                     <div class="owner-type-card">
@@ -1425,10 +1474,11 @@ function showAppOwnersPage(appType, appId) {
                         </div>
                         <div class="owner-type-description">
                             <p><strong>Eligibility:</strong> Users, Groups</p>
-                            <p><strong>Permissions:</strong> Authorized for lifecycle management including enable/disable application and soft delete/restore operations.</p>
+                            <p><strong>Permissions:</strong> Authorized for lifecycle management, including enable/disable and soft delete/restore.</p>
                         </div>
                     </div>
                     
+                    ${isTechnicalOwnerFeatureEnabled() ? `
                     <div class="owner-type-card">
                         <div class="owner-type-header">
                             <span class="owner-type-badge technical-owner">Technical Owner</span>
@@ -1438,6 +1488,7 @@ function showAppOwnersPage(appType, appId) {
                             <p><strong>Permissions:</strong> Can modify application configuration, certificates, and technical settings. Cannot add other owners, assign users/groups, or grant permissions.</p>
                         </div>
                     </div>
+                    ` : ''}
                     
                     <div class="owner-type-card">
                         <div class="owner-type-header">
@@ -2051,6 +2102,14 @@ function isRoleAssignableGroup(ownerId) {
     return groupInfo && groupInfo.type === 'Role-assignable security';
 }
 
+// Check if a group is a security group or Microsoft 365 group (but not role-assignable)
+function isSecurityOrM365Group(ownerId) {
+    const groupInfo = groups.find(group => group.id === ownerId);
+    if (!groupInfo) return false;
+    
+    return groupInfo.type === 'Security' || groupInfo.type === 'Microsoft 365';
+}
+
 // Check if the technical owners policy allows the group
 function isPolicyCompliantGroup(ownerId) {
     const policyEnabled = localStorage.getItem('allowGroupsTechnicalOwners') === 'true';
@@ -2144,15 +2203,31 @@ function addOwner(event) {
     if (searchResults) {
         searchResults.innerHTML = '<div class="no-results">Start typing to search for users or groups</div>';
     }
-    
-    // Clear all validation warnings
+      // Clear all validation warnings
     const fullOwnerWarning = document.getElementById('owner-validation-warning');
     const technicalOwnerWarning = document.getElementById('technical-owner-warning');
     const policyViolationWarning = document.getElementById('policy-violation-warning');
     
     if (fullOwnerWarning) fullOwnerWarning.style.display = 'none';
     if (technicalOwnerWarning) technicalOwnerWarning.style.display = 'none';
-    if (policyViolationWarning) policyViolationWarning.style.display = 'none';
+    if (policyViolationWarning) policyViolationWarning.style.display = 'none';      // Show/hide technical owner option based on feature flag
+    const technicalOwnerOption = document.getElementById('technical-owner-option');
+    
+    if (isTechnicalOwnerFeatureEnabled()) {
+        if (technicalOwnerOption) technicalOwnerOption.style.display = '';
+        // Technical owner warnings are already cleared above and will be shown by validation if needed
+    } else {
+        if (technicalOwnerOption) technicalOwnerOption.style.display = 'none';
+        // Force hide technical owner warnings when feature is disabled
+        if (technicalOwnerWarning) technicalOwnerWarning.style.display = 'none';
+        if (policyViolationWarning) policyViolationWarning.style.display = 'none';
+        
+        // Reset to Contact if Technical Owner was selected
+        const ownerTypeSelect = document.getElementById('owner-type-select');
+        if (ownerTypeSelect && ownerTypeSelect.value === 'Technical Owner') {
+            ownerTypeSelect.value = 'Contact';
+        }
+    }
     
     // Clear any residual closing state
     modal.removeAttribute('data-closing');
@@ -2376,15 +2451,15 @@ function validateOwnerSelection() {
     // Check if any selected owners are Groups and the owner type is Full Owner
     const hasGroupAsFullOwner = selectedOwners.some(owner => 
         owner.type === 'group' && ownerType === 'Full Owner'
-    );
-    
-    // Check if any selected owners are Groups and the owner type is Technical Owner
-    const hasGroupAsTechnicalOwner = selectedOwners.some(owner => 
-        owner.type === 'group' && ownerType === 'Technical Owner'
+    );      // Only check technical owner warnings if the feature is enabled
+    const isTechnicalFeatureEnabled = isTechnicalOwnerFeatureEnabled();
+      // Check if any selected groups are Security or Microsoft 365 groups (not role-assignable) and owner type is Technical Owner
+    const hasSecurityOrM365GroupAsTechnicalOwner = isTechnicalFeatureEnabled && ownerType === 'Technical Owner' && selectedOwners.some(owner => 
+        owner.type === 'group' && isSecurityOrM365Group(owner.id)
     );
     
     // Check if any groups violate the technical owners policy (only for Technical Owner type)
-    const hasPolicyViolation = ownerType === 'Technical Owner' && selectedOwners.some(owner => 
+    const hasPolicyViolation = isTechnicalFeatureEnabled && ownerType === 'Technical Owner' && selectedOwners.some(owner => 
         owner.type === 'group' && !isPolicyCompliantGroup(owner.id)
     );
     
@@ -2392,8 +2467,7 @@ function validateOwnerSelection() {
     if (hasGroupAsFullOwner && fullOwnerWarning) {
         fullOwnerWarning.style.display = 'block';
     }
-    
-    if (hasGroupAsTechnicalOwner && technicalOwnerWarning && !hasPolicyViolation) {
+      if (hasSecurityOrM365GroupAsTechnicalOwner && technicalOwnerWarning && !hasPolicyViolation) {
         technicalOwnerWarning.style.display = 'block';
     }
     
@@ -2782,10 +2856,20 @@ function initializeDemoStage2() {
         demoStage2Toggle.addEventListener('change', function() {
             const isDemoStage2 = this.checked;
             localStorage.setItem('demoStage2', isDemoStage2);
-            // TODO: Add demo stage 2 functionality here
             console.log('Demo stage 2:', isDemoStage2 ? 'enabled' : 'disabled');
+            
+            // Update dynamic arrays immediately
+            updateDynamicArrays();
+            
+            // Reload the page to apply/remove technical owner features
+            window.location.reload();
         });
     }
+}
+
+// Helper function to check if technical owner features should be enabled
+function isTechnicalOwnerFeatureEnabled() {
+    return localStorage.getItem('demoStage2') === 'true';
 }
 
 // Technical Owners Policy Functions

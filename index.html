@@ -156,17 +156,16 @@
                     <select id="owner-type-select" class="form-select" onchange="validateOwnerSelection()">
                         <option value="Contact" selected>Contact</option>
                         <option value="Sponsor">Sponsor</option>
-                        <option value="Technical Owner">Technical Owner</option>
+                        <option value="Technical Owner" id="technical-owner-option">Technical Owner</option>
                         <option value="Full Owner">Full Owner</option>
                     </select>
                 </div>
                   <div id="owner-validation-warning" class="validation-warning" style="display: none;">
                     <i class="fas fa-exclamation-triangle"></i>
                     Groups cannot be assigned as full owners. Please select a different owner type.
-                </div>
-                  <div id="technical-owner-warning" class="validation-warning-gold" style="display: none;">
+                </div>                  <div id="technical-owner-warning" class="validation-warning-gold" style="display: none;">
                     <i class="fas fa-exclamation-triangle"></i>
-                    Warning: Adding groups as technical owners may allow group admin roles in your tenant to control these applications.
+                    Warning: Adding standard groups as technical owners may allow group admin roles in your tenant to control these applications.
                 </div>
                 
                 <div id="policy-violation-warning" class="validation-warning" style="display: none;">
