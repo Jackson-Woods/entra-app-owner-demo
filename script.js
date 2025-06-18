@@ -1485,7 +1485,7 @@ function showAppOwnersPage(appType, appId) {
                         </div>
                         <div class="owner-type-description">
                             <p><strong>Eligibility:</strong> Users, Groups</p>
-                            <p><strong>Permissions:</strong> Can modify application configuration, certificates, and technical settings. Cannot add other owners, assign users/groups, or grant permissions.</p>
+                            <p><strong>Permissions:</strong> Can modify basic application properties and other properties you select. Cannot add other owners, assign users/groups, or grant permissions.</p>
                         </div>
                     </div>
                     ` : ''}
@@ -1496,7 +1496,7 @@ function showAppOwnersPage(appType, appId) {
                         </div>
                         <div class="owner-type-description">
                             <p><strong>Eligibility:</strong> Users only</p>
-                            <p><strong>Permissions:</strong> Complete administrative control including all configuration changes, user/group assignments, permission grants, and owner management.</p>
+                            <p><strong>Permissions:</strong> Complete administrative control including all configuration changes, user/group assignments, app role assignments, and owner management.</p>
                         </div>
                     </div>
                 </div>
