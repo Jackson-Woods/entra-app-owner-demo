@@ -851,8 +851,7 @@ function showTenantConfiguration() {
                     <div class="config-section-header">
                         <h2 class="section-title">Owner Management Policies</h2>
                         <p class="section-description">Configure how application and group ownership is managed</p>
-                    </div>                      <div class="config-policies">
-                        <div class="policy-item">
+                    </div>                      <div class="config-policies">                        <div class="policy-item">
                             <div class="policy-header">
                                 <div class="policy-title">Allow security groups and Microsoft 365 groups as technical owners</div>
                                 <label class="toggle-switch">
@@ -861,6 +860,28 @@ function showTenantConfiguration() {
                                 </label>
                             </div>
                             <p class="policy-description">Permit security groups and Microsoft 365 groups to be assigned as technical owners of applications and resources</p>
+                            
+                            <div class="technical-owner-permissions">
+                                <label class="permissions-label">Technical owner allowed access</label>
+                                <div class="permissions-checkboxes">
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="tech-owner-basic" checked disabled>
+                                        <span class="checkbox-label">Basic properties and branding</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="tech-owner-lifecycle" checked>
+                                        <span class="checkbox-label">Lifecycle properties</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="tech-owner-authentication" checked>
+                                        <span class="checkbox-label">Authentication properties</span>
+                                    </label>
+                                    <label class="checkbox-item">
+                                        <input type="checkbox" id="tech-owner-authorization" checked>
+                                        <span class="checkbox-label">Authorization properties</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>    
                     
                         <div class="policy-item">
@@ -913,11 +934,11 @@ function showTenantConfiguration() {
     `;
     
     document.getElementById('main-content').innerHTML = content;
-    
-    // Initialize policy toggles after content is loaded
+      // Initialize policy toggles after content is loaded
     setTimeout(() => {
         initializeTechnicalOwnersPolicy();
         initializeOrphanedResourceAlertsPolicy();
+        initializeTechnicalOwnerPermissions();
     }, 100);
 }
 
@@ -2801,6 +2822,33 @@ function initializeOrphanedResourceAlertsPolicy() {
     }
 }
 
+// Technical Owner Permissions Functions
+function initializeTechnicalOwnerPermissions() {
+    const permissions = [
+        { id: 'tech-owner-basic', key: 'techOwnerBasic', defaultValue: true },
+        { id: 'tech-owner-lifecycle', key: 'techOwnerLifecycle', defaultValue: true },
+        { id: 'tech-owner-authentication', key: 'techOwnerAuthentication', defaultValue: true },
+        { id: 'tech-owner-authorization', key: 'techOwnerAuthorization', defaultValue: true }
+    ];
+    
+    permissions.forEach(permission => {
+        const checkbox = document.getElementById(permission.id);
+        if (checkbox) {
+            // Skip the disabled checkbox (basic properties) from localStorage
+            if (!checkbox.disabled) {
+                const savedValue = localStorage.getItem(permission.key);
+                const isEnabled = savedValue === null ? permission.defaultValue : savedValue === 'true';
+                
+                checkbox.checked = isEnabled;
+                checkbox.addEventListener('change', function() {
+                    localStorage.setItem(permission.key, this.checked);
+                    console.log(`${permission.key}:`, this.checked ? 'enabled' : 'disabled');
+                });
+            }
+        }
+    });
+}
+
 function applyDarkModeGlobally(isDarkMode) {
     const body = document.body;
     const mainContent = document.getElementById('main-content');
@@ -2826,4 +2874,5 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeDemoStage2();
     initializeTechnicalOwnersPolicy();
     initializeOrphanedResourceAlertsPolicy();
+    initializeTechnicalOwnerPermissions();
 });

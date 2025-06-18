@@ -1350,6 +1350,54 @@ input:checked + .toggle-slider:before {
     transform: translateX(20px);
 }
 
+/* Technical Owner Permissions Styles */
+.technical-owner-permissions {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e1dfdd;
+}
+
+.permissions-label {
+    display: block;
+    font-weight: 600;
+    color: #323130;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.permissions-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #323130;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin: 0;
+    cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}
+
+.checkbox-item:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.checkbox-label {
+    user-select: none;
+}
+
     /* Help Overlay Styles */
 .help-overlay {
     position: fixed;
@@ -1655,6 +1703,18 @@ body.dark-mode {
 
 .dark-mode .policy-description {
     color: #cccccc;
+}
+
+.dark-mode .technical-owner-permissions {
+    border-top-color: #3e3e42;
+}
+
+.dark-mode .permissions-label {
+    color: #ffffff;
+}
+
+.dark-mode .checkbox-item {
+    color: #ffffff;
 }
 
 .dark-mode .app-table tr:hover {
